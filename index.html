@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TradeSynapse</title>
+    <title>TradeDocs</title>
     <script src="https://cdn.tailwindcss.com?plugins=typography,forms"></script>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
@@ -74,17 +75,24 @@
       .animate-slide-up-fade-in {
         animation: slideUpAndFadeIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
       }
-      /* Show visual backticks on code tags */
-      .prose code::before,
-      .prose code::after {
-        content: '`';
+      
+      /* Overrides para o parser markdown manual */
+      .prose ul, .prose ol {
+          padding-left: 1.5rem;
       }
-      /* Hide visual backticks when in editing mode for a cleaner experience */
-      .editing-prose code::before,
-      .editing-prose code::after {
-        content: none;
+      .prose li {
+          margin-bottom: 0.5rem;
+      }
+      .prose p {
+          margin-bottom: 1rem;
+          line-height: 1.6;
+      }
+      .prose pre {
+          background-color: #0d1117;
+          margin: 1.5rem 0;
       }
     </style>
+<link rel="stylesheet" href="/index.css">
 </head>
 <body class="bg-gray-900">
     <div id="root"></div>
@@ -99,5 +107,6 @@
     }
     </script>
     <script type="module" src="./index.js"></script>
+<script type="module" src="/index.tsx"></script>
 </body>
 </html>
