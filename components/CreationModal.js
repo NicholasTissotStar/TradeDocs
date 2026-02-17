@@ -1,5 +1,5 @@
 
-import React, { useState, useRef, memo } from 'react';
+import React, { useState, useRef, useEffect, memo } from 'react';
 import { LoadingSpinner, PlusIcon, TrashIcon, DragHandleIcon, UploadIcon, FileIcon, JsonIcon, CloseIcon } from './Icons.js';
 import { generateDocumentStructure, generateFullDocumentContent } from '../services/aiService.js';
 import { markdownToHtml } from '../services/geminiService.js';
@@ -74,6 +74,26 @@ const CreationModal = ({ onClose, onDocumentCreate, currentTeam, responsiblePers
   const [error, setError] = useState('');
   const [teamData, setTeamData] = useState({ pastedCode: '', uploadedFiles: [] });
   const fileInputRef = useRef(null);
+  const scrollAreaRef = useRef(null);
+  const endRef = useRef(null);
+  const [shouldFollow, setShouldFollow] = useState(true);
+
+  useEffect(() => {
+    if (generationStep === 'generating' && shouldFollow) {
+      if (endRef.current) {
+        endRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      } else if (scrollAreaRef.current) {
+        scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+      }
+    }
+  }, [streamingContent, generationStep, shouldFollow]);
+
+  const handleScroll = () => {
+    const el = scrollAreaRef.current;
+    if (!el) return;
+    const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 40;
+    setShouldFollow(nearBottom);
+  };
 
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files);
@@ -139,8 +159,9 @@ const CreationModal = ({ onClose, onDocumentCreate, currentTeam, responsiblePers
               ),
               React.createElement('button', { onClick: onClose, className: "text-gray-500 hover:text-white transition-colors p-2" }, "✕")
             ),
-            React.createElement('div', { className: "flex-grow p-10 overflow-y-auto custom-scrollbar" },
-              React.createElement('div', { className: "max-w-3xl mx-auto prose prose-invert prose-indigo", dangerouslySetInnerHTML: { __html: markdownToHtml(streamingContent) + '<span class="typing-cursor"></span>' } })
+            React.createElement('div', { className: "flex-grow p-10 overflow-y-auto custom-scrollbar", ref: scrollAreaRef, onScroll: handleScroll },
+              React.createElement('div', { className: "max-w-3xl mx-auto prose prose-invert prose-indigo", dangerouslySetInnerHTML: { __html: markdownToHtml(streamingContent) + '<span class="typing-cursor"></span>' } }),
+              React.createElement('div', { ref: endRef })
             ),
             React.createElement('div', { className: "p-5 bg-gray-900 border-t border-gray-800 flex justify-between items-center" },
               React.createElement('span', { className: "text-sm text-gray-500 italic font-light" }, loadingMessage),
