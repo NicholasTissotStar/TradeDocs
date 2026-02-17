@@ -7,6 +7,8 @@ import Onboarding from './components/Onboarding.js';
 import ConfirmationModal from './components/ConfirmationModal.js';
 import { PlusIcon, DocumentIcon, TrashIcon, InfoIcon, SearchIcon, UserIcon } from './components/Icons.js';
 import { Team } from './types.js';
+import AISettingsModal from './components/AISettingsModal.js';
+import { getProviderLabel } from './services/aiService.js';
 
 const ResponsibleModal = ({ isOpen, onClose, currentResponsible, onResponsibleSave }) => {
   const [responsibleName, setResponsibleName] = useState(currentResponsible || '');
@@ -80,6 +82,8 @@ const App = () => {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [responsiblePerson, setResponsiblePerson] = useState('');
+  const [isAISettingsOpen, setIsAISettingsOpen] = useState(false);
+  const [engineBanner, setEngineBanner] = useState(getProviderLabel());
 
   useEffect(() => {
     const savedDocs = localStorage.getItem('synapsedocs-documents');
@@ -99,6 +103,10 @@ const App = () => {
     localStorage.setItem('synapsedocs-responsible', responsiblePerson);
     if (!showOnboarding) localStorage.setItem('synapsedocs-onboarded', 'true');
   }, [documents, currentTeam, showOnboarding, responsiblePerson]);
+  
+  useEffect(() => {
+    setEngineBanner(getProviderLabel());
+  }, [isAISettingsOpen]);
 
   const handleDocumentCreate = (title, content, sources = []) => {
     const newDocument = {
@@ -168,11 +176,12 @@ const App = () => {
             currentTeam: currentTeam, 
             onTeamChange: (team) => { setCurrentTeam(team); }, 
             onOpenResponsibleSettings: () => setIsResponsibleModalOpen(true),
+            onOpenAISettings: () => setIsAISettingsOpen(true),
             responsiblePerson: responsiblePerson
           }),
           React.createElement('div', { className: "bg-indigo-950/40 text-indigo-300 text-[10px] font-bold tracking-widest text-center py-2 border-b border-indigo-900/50 flex items-center justify-center gap-3" },
             React.createElement('div', { className: "w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" }),
-            "GEMINI 3 PRO ENGINE ACTIVE • ARCHITECTURAL REASONING v2 • GOOGLE SEARCH GROUNDING"
+            engineBanner
           ),
           React.createElement('main', { className: "container mx-auto p-4 md:p-8 animate-fade-in" },
             React.createElement('div', { className: "flex flex-col md:flex-row gap-4 mb-10" },
@@ -247,7 +256,8 @@ const App = () => {
       ),
       isModalOpen && React.createElement(CreationModal, { onClose: () => setIsModalOpen(false), onDocumentCreate: handleDocumentCreate, currentTeam: currentTeam, responsiblePerson: responsiblePerson }),
       isDeleteConfirmOpen && React.createElement(ConfirmationModal, { isOpen: isDeleteConfirmOpen, onClose: () => setIsDeleteConfirmOpen(false), onConfirm: handleConfirmDelete, title: "Excluir Registro", message: `Deseja apagar permanentemente "${docToDelete?.title}"? Esta ação não pode ser desfeita.` }),
-      React.createElement(ResponsibleModal, { isOpen: isResponsibleModalOpen, onClose: () => setIsResponsibleModalOpen(false), currentResponsible: responsiblePerson, onResponsibleSave: setResponsiblePerson })
+      React.createElement(ResponsibleModal, { isOpen: isResponsibleModalOpen, onClose: () => setIsResponsibleModalOpen(false), currentResponsible: responsiblePerson, onResponsibleSave: setResponsiblePerson }),
+      React.createElement(AISettingsModal, { isOpen: isAISettingsOpen, onClose: () => setIsAISettingsOpen(false), onApplied: () => setEngineBanner(getProviderLabel()) })
     )
   );
 };

@@ -1,7 +1,8 @@
 
 import React, { useState, useRef, memo } from 'react';
 import { LoadingSpinner, PlusIcon, TrashIcon, DragHandleIcon, UploadIcon, FileIcon, JsonIcon, CloseIcon } from './Icons.js';
-import { generateDocumentStructure, generateFullDocumentContent, markdownToHtml } from '../services/geminiService.js';
+import { generateDocumentStructure, generateFullDocumentContent } from '../services/aiService.js';
+import { markdownToHtml } from '../services/geminiService.js';
 
 const StructureItem = memo(({ item, index, parentIndex, onTitleChange, onAddSubItem, onRemoveItem }) => {
     const isChild = parentIndex !== null;

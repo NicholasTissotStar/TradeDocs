@@ -1,9 +1,9 @@
 
 import React from 'react';
 import { Team } from '../types.js';
-import { TeamIcon, UserIcon } from './Icons.js';
+import { TeamIcon, UserIcon, SettingsIcon } from './Icons.js';
 
-const Header = ({ currentTeam, onTeamChange, onOpenResponsibleSettings, responsiblePerson }) => {
+const Header = ({ currentTeam, onTeamChange, onOpenResponsibleSettings, onOpenAISettings, responsiblePerson }) => {
   return (
     React.createElement('header', { className: "bg-gray-800/50 backdrop-blur-sm p-4 sticky top-0 z-20 border-b border-gray-700" },
       React.createElement('div', { className: "container mx-auto flex justify-between items-center" },
@@ -25,6 +25,14 @@ const Header = ({ currentTeam, onTeamChange, onOpenResponsibleSettings, responsi
                 ))
               )
             )
+          ),
+          React.createElement('button', {
+            onClick: onOpenAISettings,
+            className: 'flex items-center gap-2 text-sm font-medium p-2 rounded-lg border border-transparent text-gray-300 hover:bg-gray-700/50 hover:border-gray-600 transition-colors',
+            title: "Configurações de IA"
+          },
+            React.createElement(SettingsIcon, null),
+            React.createElement('span', { className: 'hidden sm:inline' }, "IA")
           ),
           React.createElement('button', {
             onClick: onOpenResponsibleSettings,
