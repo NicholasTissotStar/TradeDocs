@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { SettingsIcon, CloseIcon } from './Icons.js';
 import { listProviders, setActiveProvider, saveApiKey, PROVIDER_IDS } from '../services/aiService.js';
+import { openAuthWindow } from '../services/authHooks.js';
 
 const AISettingsModal = ({ isOpen, onClose, onApplied }) => {
   const providers = listProviders();
@@ -24,11 +25,26 @@ const AISettingsModal = ({ isOpen, onClose, onApplied }) => {
 
   if (!isOpen) return null;
 
+  const [connUrl, setConnUrl] = useState(localStorage.getItem(`ai-conn.${provider}`) || '');
+  const [connStatus, setConnStatus] = useState('');
+
   const handleSave = () => {
     setActiveProvider(provider);
     Object.entries(keys).forEach(([p, k]) => saveApiKey(p, k));
+    if (connUrl) localStorage.setItem(`ai-conn.${provider}`, connUrl);
     onApplied?.();
     onClose();
+  };
+
+  const handleConnect = async () => {
+    if (!connUrl) { setConnStatus('Informe a URL de conexão'); return; }
+    setConnStatus('Conectando...');
+    try {
+      await openAuthWindow({ url: connUrl, provider });
+      setConnStatus('Conexão concluída');
+    } catch (e) {
+      setConnStatus(e.message || 'Falha na conexão');
+    }
   };
 
   const renderKeyField = () => {
@@ -87,15 +103,31 @@ const AISettingsModal = ({ isOpen, onClose, onApplied }) => {
           React.createElement('label', { className: "text-xs font-bold text-gray-500 uppercase tracking-wider" }, "Provedor"),
           React.createElement('select', {
             value: provider,
-            onChange: (e) => setProvider(e.target.value),
+            onChange: (e) => { 
+              const v = e.target.value;
+              setProvider(v);
+              setConnUrl(localStorage.getItem(`ai-conn.${v}`) || '');
+            },
             className: "w-full bg-gray-900 border border-gray-700 text-white rounded-xl p-3"
           },
             providers.map(p => React.createElement('option', { key: p.id, value: p.id }, p.name))
           )
         ),
         renderKeyField(),
-        React.createElement('div', { className: "rounded-xl border border-gray-700 p-4 bg-gray-900/40" },
-          React.createElement('p', { className: "text-xs text-gray-400" }, "Também é possível entrar com a conta do provedor para usar a sessão existente. Recursos de login direto serão adicionados em seguida.")
+        React.createElement('div', { className: "rounded-xl border border-gray-700 p-4 bg-gray-900/40 space-y-3" },
+          React.createElement('div', { className: "text-xs font-bold text-gray-500 uppercase tracking-wider" }, "Login / Conexão"),
+          React.createElement('input', {
+            type: "text",
+            placeholder: "URL de conexão (ex.: https://seu-auth.example.com/start)",
+            value: connUrl,
+            onChange: (e) => setConnUrl(e.target.value),
+            className: "w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white placeholder-gray-500"
+          }),
+          React.createElement('div', { className: "flex gap-3 items-center" },
+            React.createElement('button', { onClick: handleConnect, className: "bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors" }, "Conectar"),
+            React.createElement('span', { className: "text-xs text-gray-400" }, connStatus)
+          ),
+          React.createElement('p', { className: "text-[11px] text-gray-500" }, "A página de conexão deve enviar window.postMessage({ type: 'TRADEDOCS_AUTH', provider: 'gemini|openai|anthropic', aiKey?: '...', aiToken?: '...' }, window.origin).")
         )
       ),
       React.createElement('div', { className: "p-6 border-t border-gray-700 bg-gray-800/60 flex justify-end gap-3" },
@@ -107,4 +139,3 @@ const AISettingsModal = ({ isOpen, onClose, onApplied }) => {
 };
 
 export default AISettingsModal;
-

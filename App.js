@@ -148,6 +148,7 @@ const App = () => {
     setCurrentTeam(selectedTeam);
     setResponsiblePerson(name);
     setShowOnboarding(false);
+    setEngineBanner(getProviderLabel());
   };
 
   if (showOnboarding) {

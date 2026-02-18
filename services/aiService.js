@@ -11,8 +11,10 @@ const getActiveProvider = () => {
 };
 
 const getKey = (provider) => {
-  const k = localStorage.getItem(`ai-keys.${provider}`);
-  if (k) return k;
+  const key = localStorage.getItem(`ai-keys.${provider}`);
+  if (key) return key;
+  const token = localStorage.getItem(`ai-tokens.${provider}`);
+  if (token) return token;
   if (provider === PROVIDERS.GEMINI) return process.env.GEMINI_API_KEY || process.env.API_KEY || '';
   return '';
 };
@@ -53,7 +55,7 @@ export const generateDocumentStructure = async (params) => {
     return mod.generateDocumentStructure(params);
   }
   if (provider === PROVIDERS.OPENAI) {
-    const mod = await import('./openaiService.js');
+    const mod = await import('./openAIService.js');
     return mod.generateDocumentStructureWithOpenAI(params, getKey(PROVIDERS.OPENAI));
   }
   if (provider === PROVIDERS.ANTHROPIC) {
@@ -73,7 +75,7 @@ export const generateFullDocumentContent = async (params, structures, progressCa
     return mod.generateFullDocumentContent(params, structures, progressCallback, onToken);
   }
   if (provider === PROVIDERS.OPENAI) {
-    const mod = await import('./openaiService.js');
+    const mod = await import('./openAIService.js');
     return mod.generateFullDocumentContentWithOpenAI(params, structures, getKey(PROVIDERS.OPENAI), progressCallback, onToken);
   }
   if (provider === PROVIDERS.ANTHROPIC) {
