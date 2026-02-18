@@ -1,7 +1,10 @@
 export const openAuthWindow = ({ url, provider }) => {
   return new Promise((resolve, reject) => {
     try {
-      const authUrl = url;
+      const base = new URL(url, window.location.href);
+      base.searchParams.set('provider', provider);
+      base.searchParams.set('target', window.origin);
+      const authUrl = base.toString();
       const expected = (() => {
         try { return new URL(authUrl).origin; } catch { return null; }
       })();
@@ -40,4 +43,3 @@ export const openAuthWindow = ({ url, provider }) => {
     }
   });
 };
-

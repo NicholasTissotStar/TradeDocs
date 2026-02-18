@@ -61,11 +61,15 @@
     const statusEl = $('status');
     const setStatus = (t, cls) => { statusEl.textContent = t; statusEl.className = 'note ' + (cls || ''); };
     const canTalk = typeof window.opener !== 'undefined' && window.opener && !window.opener.closed;
+    const params = new URLSearchParams(window.location.search);
+    const targetOrigin = params.get('target') || '*';
+    const presetProvider = params.get('provider');
+    if (presetProvider) { try { providerEl.value = presetProvider; } catch(e) {} }
     if (!canTalk) setStatus('Não foi possível detectar a janela de origem.', 'warn');
     const postBack = (payload) => {
       if (!canTalk) { setStatus('Sem janela de origem', 'warn'); return; }
       try {
-        window.opener.postMessage(payload, '*');
+        window.opener.postMessage(payload, targetOrigin);
         setStatus('Enviado', 'ok');
         setTimeout(() => { try { window.close(); } catch(e) {} }, 300);
       } catch (e) {
