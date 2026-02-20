@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeDocs</title>
+    <script src="https://cdn.tailwindcss.com?plugins=typography,forms"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #111827; /* gray-900 */
+      }
+      ::-webkit-scrollbar-thumb {
+        background-color: #4f46e5; /* indigo-600 */
+        border-radius: 4px;
+        border: 2px solid #111827; /* gray-900 */
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #6366f1; /* indigo-500 */
+      }
+      html {
+        scrollbar-width: thin;
+        scrollbar-color: #4f46e5 #111827;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+      }
+      @keyframes slideUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      @keyframes slideUpAndFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(75%);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      /* Typing cursor animation */
+      .typing-cursor::after {
+        content: '▋';
+        display: inline-block;
+        margin-left: 2px;
+        animation: blink 1s step-end infinite;
+      }
+      @keyframes blink {
+        from, to { color: transparent; }
+        50% { color: #a5b4fc; /* indigo-300 */ }
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.3s ease-out forwards;
+      }
+      .animate-fade-out {
+        animation: fadeOut 0.3s ease-out forwards;
+      }
+      .animate-slide-up {
+        animation: slideUp 0.4s ease-out forwards;
+      }
+      .animate-slide-up-fade-in {
+        animation: slideUpAndFadeIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      }
+      /* Overrides para o parser markdown manual */
+      .prose ul, .prose ol {
+          padding-left: 1.5rem;
+      }
+      .prose li {
+          margin-bottom: 0.5rem;
+      }
+      .prose p {
+          margin-bottom: 1rem;
+          line-height: 1.6;
+      }
+      .prose pre {
+          background-color: #0d1117;
+          margin: 1.5rem 0;
+      }
+    </style>
+<link rel="stylesheet" href="index.css">
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://aistudiocdn.com/react@^19.2.0",
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+        "react/": "https://aistudiocdn.com/react@^19.2.0/",
+        "@google/genai": "https://aistudiocdn.com/@google/genai@^1.24.0"
+      }
+    }
+    </script>
+  <script type="module" crossorigin src="/assets/index-BTnK2vj7.js"></script>
+</head>
+<body class="bg-gray-900">
+    <div id="root"></div>
+
+</body>
+</html>
