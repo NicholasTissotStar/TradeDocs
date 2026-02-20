@@ -9,6 +9,7 @@ import { PlusIcon, DocumentIcon, TrashIcon, InfoIcon, SearchIcon, UserIcon } fro
 import { Team } from './types.js';
 import AISettingsModal from './components/AISettingsModal.js';
 import { getProviderLabel } from './services/aiService.js';
+import MainLayout from './components/MainLayout.js';
 
 const ResponsibleModal = ({ isOpen, onClose, currentResponsible, onResponsibleSave }) => {
   const [responsibleName, setResponsibleName] = useState(currentResponsible || '');
@@ -172,19 +173,16 @@ const App = () => {
           isExiting: isExitingPreview,
         })
       ) : (
-        React.createElement(React.Fragment, null,
-          React.createElement(Header, { 
+        React.createElement(MainLayout, { 
+          header: React.createElement(Header, { 
             currentTeam: currentTeam, 
             onTeamChange: (team) => { setCurrentTeam(team); }, 
             onOpenResponsibleSettings: () => setIsResponsibleModalOpen(true),
             onOpenAISettings: () => setIsAISettingsOpen(true),
             responsiblePerson: responsiblePerson
           }),
-          React.createElement('div', { className: "bg-indigo-950/40 text-indigo-300 text-[10px] font-bold tracking-widest text-center py-2 border-b border-indigo-900/50 flex items-center justify-center gap-3" },
-            React.createElement('div', { className: "w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" }),
-            engineBanner
-          ),
-          React.createElement('main', { className: "container mx-auto p-4 md:p-8 animate-fade-in" },
+          banner: engineBanner
+        },
             React.createElement('div', { className: "flex flex-col md:flex-row gap-4 mb-10" },
               React.createElement('div', { className: "relative flex-grow group" },
                 React.createElement('input', {
